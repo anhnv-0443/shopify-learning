@@ -28,11 +28,11 @@ if (hash_equals($hmac, $new_hmac)) {
     $shopUrl = $parameters['shop'];
     $accessToken = json_decode($response, true)['access_token'];
     $selectQuery = "SELECT * FROM shops WHERE shop_url = '$shopUrl'";
-    if ($mysql->query($selectQuery)->num_rows > 0) {
+    if ($mysql->query($selectQuery)->num_rows) {
         $updateQuery = "UPDATE shops SET access_token = '$accessToken', hmac = '$hmac', updated_at = NOW() WHERE shop_url = '$shopUrl'";
         if ($mysql->query($updateQuery)) {
-            header('Location: https://' . $parameters['shop'] . '/admin/apps');
-            exist();
+            echo "<script>window.location = 'https://" . $parameters['shop'] . "/admin/apps'</script>";
+            die();
         }
     } else {
         $query = "INSERT INTO shops (shop_url, access_token, hmac, created_at, updated_at) VALUES ('$shopUrl', '$accessToken', '$hmac', NOW(), NOW())";

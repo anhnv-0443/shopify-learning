@@ -17,9 +17,14 @@ if ($result->num_rows) {
     $data = $result->fetch_assoc();
     $shopify = new Shopify($shopUrl, $data['access_token']);
 
-    $products = $shopify->reset_api('/admin/api/2021-07/products.json', [], 'GET');
-    header('Content-Type: application/json');
-    echo json_encode($products);
+    // https://shopify.dev/docs/api/admin-rest/2024-10/resources/shop#show-2024-10
+    $response = $shopify->reset_api('/admin/api/2024-10/shop.json', [], 'GET');
+    if (isset($response['errors'])) {
+        header('Location: install.php?shop=' . $_GET['shop']);
+    } else {
+        header('Content-Type: application/json');
+        echo json_encode($response);
+    }
 } else {
     header('Location: install.php?shop=' . $_GET['shop']);
 }
